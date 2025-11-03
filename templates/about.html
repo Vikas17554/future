@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Future Revealed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: radial-gradient(circle at center, #000010, #000428, #004e92);
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            color: #00fff5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Background Effects */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            top: 0;
+            left: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00fff5;
+            border-radius: 50%;
+            animation: float 6s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0.3); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+        /* Main Container */
+        .main-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        /* Title */
+        .title {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px #00fff5;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00fff5; }
+            to { text-shadow: 0 0 30px #00fff5, 0 0 40px #00fff5; }
+        }
+
+        /* Video Container */
+        .video-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            height: 70vh;
+            border: 3px solid #00fff5;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 50px #00fff5,
+                inset 0 0 50px rgba(0, 255, 245, 0.1);
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Video Overlay Effects */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00fff5, transparent);
+            box-shadow: 0 0 20px #00fff5;
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .corner-glow {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #00fff5;
+            box-shadow: 0 0 20px #00fff5;
+        }
+
+        .corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+        /* Loading Text */
+        .loading-text {
+            position: absolute;
+            bottom: 30px;
+            text-align: center;
+            font-size: 1.2rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Glow Rings */
+        .glow-ring {
+            position: fixed;
+            border: 1px solid rgba(0, 255, 245, 0.3);
+            border-radius: 50%;
+            animation: ringPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.1); opacity: 0.6; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Glow Rings -->
+    <div class="glow-ring" style="width: 300px; height: 300px; top: 10%; left: 10%;"></div>
+    <div class="glow-ring" style="width: 500px; height: 500px; bottom: 10%; right: 10%; animation-delay: 2s;"></div>
+
+    <div class="main-container">
+        <!-- Title -->
+        <h1 class="title">YOUR FUTURE REVEALED</h1>
+        
+        <!-- Video Container -->
+        <div class="video-wrapper">
+            <video id="futureVideo" autoplay loop controls>
+                <source src="{{ url_for('static', filename='images/video.mp4') }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Video Overlay Effects -->
+            <div class="video-overlay">
+                <div class="scan-line"></div>
+                <div class="corner-glow corner-tl"></div>
+                <div class="corner-glow corner-tr"></div>
+                <div class="corner-glow corner-bl"></div>
+                <div class="corner-glow corner-br"></div>
+            </div>
+        </div>
+
+        <!-- Loading Text -->
+        <div class="loading-text">PLAYING YOUR FUTURE...</div>
+    </div>
+
+    <script>
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 6 + 's';
+            particle.style.animationDuration = (4 + Math.random() * 4) + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Add multiple scan lines
+        setTimeout(() => {
+            const overlay = document.querySelector('.video-overlay');
+            for (let i = 0; i < 3; i++) {
+                const scanLine = document.createElement('div');
+                scanLine.className = 'scan-line';
+                scanLine.style.animationDelay = (i * 1) + 's';
+                overlay.appendChild(scanLine);
+            }
+        }, 1000);
+
+        // Auto-enable sound
+        const video = document.getElementById('futureVideo');
+        
+        // Remove muted attribute and set volume
+        video.muted = false;
+        video.volume = 1.0; // Full volume
+        
+        // Force play with sound
+        function playVideoWithSound() {
+            video.play().then(() => {
+                console.log('Video playing with sound');
+                video.muted = false;
+                video.volume = 1.0;
+            }).catch(error => {
+                console.log('Auto-play failed, user interaction required:', error);
+                // Show message if autoplay is blocked
+                document.querySelector('.loading-text').textContent = 'CLICK VIDEO TO PLAY WITH SOUND';
+            });
+        }
+
+        // Start playing when page loads
+        window.addEventListener('load', playVideoWithSound);
+        
+        // Also try to play when user interacts with page
+        document.addEventListener('click', function() {
+            if (video.paused) {
+                playVideoWithSound();
+            }
+        });
+
+        // Video event handlers
+        video.onloadeddata = function() {
+            console.log('Video loaded, attempting to play with sound...');
+            playVideoWithSound();
+        };
+
+        video.onerror = function() {
+            console.log('Video failed to load');
+            document.querySelector('.loading-text').textContent = 'VIDEO UNAVAILABLE';
+        };
+
+        video.onplay = function() {
+            document.querySelector('.loading-text').textContent = 'PLAYING YOUR FUTURE...';
+            console.log('Video is playing, volume:', video.volume, 'muted:', video.muted);
+        };
+    </script>
+</body>
+</html>

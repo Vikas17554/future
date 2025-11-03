@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Futuristic Vision - Are You Ready?</title>
+<style>
+/* ========= BASIC SETUP ========= */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at center, #000010, #000428, #004e92);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: #00fff5;
+  perspective: 1000px;
+}
+
+/* ========= GLOBAL ANIMATIONS ========= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(1.1); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { 
+    text-shadow: 0 0 10px #00fff5, 0 0 20px #00fff5;
+    transform: scale(1);
+  }
+  50% { 
+    text-shadow: 0 0 20px #00fff5, 0 0 40px #00fff5, 0 0 60px #00fff5;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes floatHand {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg) scale(1);
+    filter: drop-shadow(0 0 20px #00fff5);
+  }
+  50% { 
+    transform: translateY(-15px) rotate(1deg) scale(1.03);
+    filter: drop-shadow(0 0 30px #00fff5) drop-shadow(0 0 50px #00fff5);
+  }
+}
+
+@keyframes scanLight {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes moveParticle {
+  0% {
+    transform: translateY(100vh) rotate(0deg) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100px) rotate(180deg) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes spinRing {
+  0% { 
+    transform: rotateY(0deg) rotateX(60deg) scale(1);
+    opacity: 0.3;
+  }
+  50% { 
+    transform: rotateY(180deg) rotateX(60deg) scale(1.1);
+    opacity: 0.6;
+  }
+  100% { 
+    transform: rotateY(360deg) rotateX(60deg) scale(1);
+    opacity: 0.3;
+  }
+}
+
+@keyframes tunnelFlow {
+  0% { transform: translateZ(1000px) scale(0.1); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateZ(-1000px) scale(3); opacity: 0; }
+}
+
+/* ========= PARTICLES & TUNNEL ========= */
+#particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  top: 0;
+  left: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #00fff5;
+  animation: moveParticle 8s linear infinite;
+}
+
+.tunnel-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ff00ff;
+  border-radius: 50%;
+  animation: tunnelFlow 4s linear infinite;
+  box-shadow: 0 0 15px #ff00ff;
+}
+
+/* ========= TEXT STAGES ========= */
+.stage-text {
+  position: absolute;
+  text-align: center;
+  opacity: 0;
+  transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 10;
+}
+
+.stage-text.visible {
+  opacity: 1;
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+#seeFuture {
+  font-size: 5.5rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  top: 30%;
+  text-transform: uppercase;
+}
+
+#readyText {
+  font-size: 5rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* ========= HAND SECTION - LARGER SIZE ========= */
+.hand-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  width: 500px;
+  height: 600px;
+}
+
+.hand {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  animation: floatHand 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px #00fff5) drop-shadow(0 0 60px #00fff5);
+}
+
+.scan-line {
+  position: absolute;
+  width: 90%;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    #00fff5, 
+    #ff00ff, 
+    #00fff5, 
+    transparent);
+  top: 0;
+  left: 5%;
+  opacity: 0;
+  box-shadow: 
+    0 0 25px #00fff5,
+    0 0 50px #ff00ff;
+  border-radius: 50%;
+  animation: scanLight 2s linear infinite;
+  z-index: 6;
+}
+
+/* ========= GLOW RINGS ========= */
+.ring {
+  position: absolute;
+  border: 1px solid rgba(0, 255, 245, 0.4);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotateX(60deg);
+  animation: spinRing 8s linear infinite;
+  box-shadow: 
+    0 0 30px rgba(0, 255, 245, 0.3),
+    inset 0 0 30px rgba(0, 255, 245, 0.2);
+}
+
+/* ========= LIGHT EFFECTS ========= */
+.light-flash {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, 
+    rgba(0,255,255,0.4) 0%, 
+    rgba(255,0,255,0.3) 30%, 
+    transparent 70%);
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  z-index: 4;
+}
+
+.energy-pulse {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    #00fff5,
+    #ff00ff,
+    #00fff5,
+    transparent
+  );
+  top: -50%;
+  left: -50%;
+  opacity: 0.1;
+  animation: rotatePulse 10s linear infinite;
+}
+
+@keyframes rotatePulse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========= BINARY MATRIX ========= */
+.binary-rain {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.binary-digit {
+  position: absolute;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  font-weight: bold;
+  opacity: 0;
+  animation: binaryFall 6s linear infinite;
+}
+
+@keyframes binaryFall {
+  0% { transform: translateY(-100px); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background Effects -->
+<div id="particles"></div>
+<div class="energy-pulse"></div>
+<div class="binary-rain" id="binaryRain"></div>
+
+<!-- Glow Rings -->
+<div class="ring" style="width: 400px; height: 400px;"></div>
+<div class="ring" style="width: 600px; height: 600px; animation-delay: -2s;"></div>
+<div class="ring" style="width: 800px; height: 800px; animation-delay: -4s;"></div>
+
+<!-- Stage 1: SEE YOUR FUTURE -->
+<h1 id="seeFuture" class="stage-text">SEE YOUR FUTURE</h1>
+
+<!-- Stage 2: HAND SCAN -->
+<div class="hand-container">
+  <!-- FIXED IMAGE PATH - Use direct path since it's in templates folder -->
+  <img src="{{ url_for('static', filename='images/hand.png') }}" alt="hand" id="handImage" class="hand">
+  <div id="scanLine" class="scan-line"></div>
+</div>
+
+<!-- Stage 3: ARE YOU READY -->
+<h1 id="readyText" class="stage-text">ARE YOU READY?</h1>
+
+<!-- Flash Effect -->
+<div id="flash" class="light-flash"></div>
+
+<script>
+/* ========= PARTICLE GENERATION ========= */
+const particleContainer = document.getElementById('particles');
+const binaryRain = document.getElementById('binaryRain');
+
+// Create floating particles
+for (let i = 0; i < 80; i++) {
+  const p = document.createElement('div');
+  p.classList.add('particle');
+  p.style.left = Math.random() * 100 + 'vw';
+  p.style.animationDuration = (Math.random() * 5 + 4) + 's';
+  p.style.animationDelay = Math.random() * 8 + 's';
+  particleContainer.appendChild(p);
+}
+
+// Create binary rain
+for (let i = 0; i < 40; i++) {
+  const digit = document.createElement('div');
+  digit.classList.add('binary-digit');
+  digit.textContent = Math.random() > 0.5 ? '1' : '0';
+  digit.style.left = Math.random() * 100 + 'vw';
+  digit.style.animationDelay = Math.random() * 6 + 's';
+  digit.style.animationDuration = (3 + Math.random() * 4) + 's';
+  digit.style.color = Math.random() > 0.7 ? '#00fff5' : '#00ff00';
+  binaryRain.appendChild(digit);
+}
+
+// Create tunnel dots
+for (let i = 0; i < 60; i++) {
+  const dot = document.createElement('div');
+  dot.classList.add('tunnel-dot');
+  dot.style.left = Math.random() * 100 + 'vw';
+  dot.style.top = Math.random() * 100 + 'vh';
+  dot.style.animationDuration = (2 + Math.random() * 3) + 's';
+  dot.style.animationDelay = Math.random() * 5 + 's';
+  particleContainer.appendChild(dot);
+}
+
+/* ========= ELEMENTS ========= */
+const seeFuture = document.getElementById('seeFuture');
+const hand = document.getElementById('handImage');
+const scanLine = document.getElementById('scanLine');
+const readyText = document.getElementById('readyText');
+const flash = document.getElementById('flash');
+
+/* ========= IMPROVED ANIMATION SEQUENCE ========= */
+
+// Stage 1: Show "SEE YOUR FUTURE"
+/* ========= IMPROVED ANIMATION SEQUENCE ========= */
+
+// Stage 1: Show "SEE YOUR FUTURE"
+setTimeout(() => {
+  seeFuture.classList.add('visible');
+}, 800);
+
+// Stage 2: Transition to hand after 3 seconds
+setTimeout(() => {
+  seeFuture.style.opacity = '0';
+  seeFuture.style.transform = 'scale(1.1) translateY(-20px)';
+}, 3500);
+
+// Stage 3: Show hand and start scanning
+setTimeout(() => {
+  hand.style.opacity = '1';
+  setTimeout(() => {
+    scanLine.style.opacity = '1';
+  }, 500);
+}, 4500);
+
+// Stage 4: Hide scan line and hand
+setTimeout(() => {
+  scanLine.style.opacity = '0';
+}, 8500);
+
+setTimeout(() => {
+  hand.style.opacity = '0';
+  hand.style.transform = 'scale(1.1)';
+}, 9500);
+
+// Stage 5: Flash effect and show "ARE YOU READY?"
+setTimeout(() => {
+  flash.style.opacity = '1';
+}, 10000);
+
+setTimeout(() => {
+  flash.style.opacity = '0';
+  readyText.classList.add('visible');
+}, 11000);
+
+// Stage 6: Redirect after 1.5 seconds of showing "ARE YOU READY?"
+setTimeout(() => {
+  window.location.href = "/about";
+}, 12500); // 11000 + 1500 = 12500ms total
+
+// Continuous effects
+setInterval(() => {
+  // Add new particles occasionally
+  if (Math.random() > 0.7) {
+    const p = document.createElement('div');
+    p.classList.add('particle');
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (Math.random() * 5 + 4) + 's';
+    particleContainer.appendChild(p);
+    
+    setTimeout(() => {
+      if (p.parentNode) p.parentNode.removeChild(p);
+    }, 12000);
+  }
+}, 2000);
+
+// Error handling for image
+hand.onerror = function() {
+  console.error('Image failed to load');
+  // Create a placeholder hand outline
+  hand.style.display = 'none';
+  const placeholder = document.createElement('div');
+  placeholder.style.cssText = `
+    width: 100%; height: 100%; 
+    border: 3px dashed #00fff5; 
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    color: #00fff5; font-size: 1.5rem; text-align: center;
+    background: rgba(0, 255, 245, 0.1);
+  `;
+  placeholder.innerHTML = 'HAND OUTLINE<br><span style="font-size: 1rem;">Place your hand here</span>';
+  document.querySelector('.hand-container').appendChild(placeholder);
+};
+
+console.log('Animation sequence started');
+</script>
+</body>
+</html>
